@@ -151,17 +151,17 @@ DTLS协议采用 C/S 模式进行通信，其中发起请求的一端为客户�
 * SVC将视频分成三层发送
 
 ## 9.流媒体服务器
-搭建Medooze的sfu
+### 搭建Medooze的sfu
 ```
 git clone https://github.com/medooze/sfu.git
 cd sfu
 npm install
 // 在 sfu 目录下生成自签名证书文件：
 openssl req -sha256 -days 3650 -newkey rsa:1024 -nodes -new -x509 -keyout server.key -out server.cert
-// 注意：Country Name不能为空，其它可以为空
+// 注意：运行上面的命令生成证书的过程中需要填写一些字段，Country Name不能为空，可以填写CN、US等，其它可以为空
 node index.js IP
 ```
-// 上面命令中的 IP 是测试机器的 IP 地址，如果用内网测试，你可以将它设置为 127.0.0.1。如果你想用外网访问，则可以指定你的云主机的外网 IP 地址。另外需要注意的是，该服务启动后默认监听的端口是 8084，所以你在访问该服务时要指定端口为 8084
+上面命令中的 IP 是测试机器的 IP 地址，如果用内网测试，你可以将它设置为 127.0.0.1。如果你想用外网访问，则可以指定你的云主机的外网 IP 地址。另外需要注意的是，该服务启动后默认监听的端口是 8084，所以你在访问该服务时要指定端口为 8084
 
 ### sfu.js里的有些方法已经废弃，需要更新才能跑起来
 
