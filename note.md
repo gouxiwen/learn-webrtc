@@ -172,3 +172,82 @@ forceEncodedVideoInsertableStreams --> encodedInsertableStreams
 readableStream --> readable
 
 writableStream --> writable
+## 10.webrtc端到端加密
+### WebRTC Insertable Streams是WebRTC的一个新特性，提供用户操作编码后数据的能力，目前依然是试验性的功能。
+* 首先开启插入逻辑能力
+```
+var pc = new RTCPeerConnection({
+    encodedInsertableStreams: true,  
+});
+```
+* 发送端加密
+```
+for (const track of stream.getTracks()) {
+    //Add track
+    const sender = pc.addTrack(track,stream);
+    //If encrypting/decrypting
+    if (isCryptoEnabled)  {
+        //Get insertable streams
+        const senderStreams = sender.createEncodedStreams();
+        //Create transform stream for encryption
+        let senderTransformStream = new TransformStream({
+            start() {},
+            flush() {},
+            transform: encrypt
+        });
+        //Encrypt
+        senderStreams.readable
+            .pipeThrough(senderTransformStream)
+            .pipeTo(senderStreams.writable);
+    }
+}
+```
+* 接收端加密
+```
+pc.ontrack = (event) => {
+    //If encrypting/decrypting
+    if (isCryptoEnabled) {
+        //Create transfor strem fro decrypting
+        const transform = new TransformStream({
+            start() {},
+            flush() {},
+            transform: decrypt
+        });
+        //Get the receiver streams for track
+        let receiverStreams = event.receiver.createEncodedStreams();
+        //Decrytp
+        receiverStreams.readable
+            .pipeThrough(transform)
+            .pipeTo(receiverStreams.writable);
+    }
+    addRemoteTrack(event);
+};
+```
+参考文章：
+
+https://zhuanlan.zhihu.com/p/360415322
+
+https://w3c.github.io/webrtc-encoded-transform/
+
+## 11.rtmp和hls协议
+### rtmp数据格式和flv文件的关系就是flv文件=flv头+rtmp数据，可以说是同一个东西，一个是多媒体文件，一个是音视频流
+### flv文件是基于流式的，结构是flv头+固定结构音视频数据（Pre TagSize 和 Tag），因此可以很方便地进行拼接而不破坏文件结构，正因为这种特性，所以flv特别适合录制，多段录制然后拼接，也很方方便实时回放，只要录制几分钟就可以边录边放了
+* 优点：
+    * 流式播放，实时性高
+    * 基于TCP，可靠
+* 缺点：
+    * 需要flash插件支持
+    * ios不支持
+    * Adobe已不在维护
+
+在浏览器使用哔哩哔哩的flv.js播放flv文件
+
+### hls基于切片，由索引文件+多个ts文件组成
+* 优点：
+    * 基于http，不受防火墙的限制
+    * 根据客户的网络带宽情况进行自适应码率的调整
+    * 苹果产品原生支持
+* 缺点：
+    * 基于http短连接，需要缓冲，实时性差
+
+在浏览器使用video.js可以播放hls协议的m3u8文件
