@@ -202,7 +202,7 @@ for (const track of stream.getTracks()) {
     }
 }
 ```
-* 接收端加密
+* 接收端解密
 ```
 pc.ontrack = (event) => {
     //If encrypting/decrypting
