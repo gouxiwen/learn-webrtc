@@ -11,25 +11,25 @@ var express = require('express');
 var app = express();
 
 //顺序不能换
-app.use(serveIndex(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(serveIndex(path.join(__dirname, 'lesson')));
+app.use(express.static(path.join(__dirname, 'lesson')));
 app.use((req, res) => {
-	console.log('req', req);
+  console.log('req', req);
 })
 
 var options = {
-	key  : fs.readFileSync(path.join(__dirname, 'cert/private.pem')),
-	cert : fs.readFileSync(path.join(__dirname,'cert/csr.crt'))
+  key: fs.readFileSync(path.join(__dirname, 'cert/private.pem')),
+  cert: fs.readFileSync(path.join(__dirname, 'cert/csr.crt'))
 }
 
 var https_server = https.createServer(options, app);
-https_server.listen(443, '0.0.0.0', function() {
-	console.log('HTTPS Server is running');
-  });
+https_server.listen(443, '0.0.0.0', function () {
+  console.log('HTTPS Server is running');
+});
 
 var http_server = http.createServer(app);
-http_server.listen(80, '0.0.0.0', function() {
-	console.log('HTTP Server is running');
-  });
+http_server.listen(80, '0.0.0.0', function () {
+  console.log('HTTP Server is running');
+});
 
 

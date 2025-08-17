@@ -21,6 +21,6 @@
     "express": "^4.17.2",
     "log4js": "^6.4.1",
     "serve-index": "^1.9.1",
-    "socket.io": "^4.4.1"
+    "socket.io": "^2.5.1"
   }
 }
