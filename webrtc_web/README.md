@@ -3,7 +3,17 @@ for geek time
 
 1.获取设备信息必须在https协议下
 
-2.自己生成证书 参考https://www.jianshu.com/p/9072dce6eb2e
+2.自己生成证书
+mac
+参考https://www.jianshu.com/p/9072dce6eb2e
+
+windows
+参考https://blog.csdn.net/m0_74824894/article/details/145789047
+
+```
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./cert/private.pem -out ./cert/csr.crt
+```
+
 
 3.修改hosts文件 etc/hosts
 

@@ -1,6 +1,7 @@
 'use strict'
 
 var log4js = require('log4js');
+const os = require('os');
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
@@ -37,11 +38,29 @@ var app = express();
 app.use(serveIndex('./public'));
 app.use(express.static('./public'));
 
-
+// 获取本机的网络接口信息
+const networkInterfaces = os.networkInterfaces();
+ 
+// 查找IPv4地址
+let ipAddress;
+const interfaces = Object.values(networkInterfaces)
+for (let index = 0; index < interfaces.length; index++) {
+  const details = interfaces[index];
+  for (let index = 0; index < details.length; index++) {
+    const iface = details[index];
+    if (iface.family === 'IPv4' && !iface.internal) {
+      ipAddress = iface.address;
+      break;
+    }
+  };
+  if (ipAddress) {
+    break
+  }
+};
 
 //http server
 var http_server = http.createServer(app);
-http_server.listen(80, '0.0.0.0', () => { console.log('https://localhost/index.html'); });
+http_server.listen(80, '0.0.0.0', () => { console.log('\x1b[32m%s\x1b[0m',`https://${ipAddress}/index.html`); });
 
 var options = {
   key: fs.readFileSync(path.join(__dirname, '../../cert/private.pem')),
