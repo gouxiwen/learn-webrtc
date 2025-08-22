@@ -344,7 +344,9 @@ function createPeerConnection() {
   console.log("create RTCPeerConnection!");
   if (!pc) {
     pc = new RTCPeerConnection(pcConfig);
-
+    // 创建实例，但此时什么都没有发生，addTrack createDataChannel不会立即生效
+    // 所有的本机动作都在setLocalDescription后才会生效
+    
     pc.onicecandidate = (event) => {
       if (event.candidate) {
         sendMessage(roomid, {
